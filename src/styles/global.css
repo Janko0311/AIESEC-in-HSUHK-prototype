@@ -133,7 +133,8 @@ a {
 }
 
 .university-menu,
-.exchange-menu {
+.exchange-menu,
+.students-menu {
   position: absolute;
   top: 100%;
   left: 0;
@@ -153,15 +154,18 @@ a {
 
 .nav-dropdown:hover .university-menu,
 .nav-dropdown:hover .exchange-menu,
+.nav-dropdown:hover .students-menu,
 .nav-dropdown:focus-within .university-menu,
-.nav-dropdown:focus-within .exchange-menu {
+.nav-dropdown:focus-within .exchange-menu,
+.nav-dropdown:focus-within .students-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
 .university-menu a,
-.exchange-menu a {
+.exchange-menu a,
+.students-menu a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -179,8 +183,10 @@ a {
 
 .university-menu a:hover,
 .exchange-menu a:hover,
+.students-menu a:hover,
 .university-menu a:focus-visible,
-.exchange-menu a:focus-visible {
+.exchange-menu a:focus-visible,
+.students-menu a:focus-visible {
   background: var(--aiesec-vibrant-blue-dark);
   outline: none;
 }
