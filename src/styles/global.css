@@ -1,6 +1,8 @@
 :root {
   --aiesec-blue: #0a8ea0;
   --aiesec-bright-blue: #007dff;
+  --aiesec-vibrant-blue: #037ef3;
+  --aiesec-vibrant-blue-dark: #0268cc;
   --pure-white: #ffffff;
   --text-dark: #222222;
   --text-muted: rgba(255, 255, 255, 0.82);
@@ -45,7 +47,7 @@ a {
 }
 
 .global-nav {
-  background-color: var(--aiesec-bright-blue);
+  background-color: var(--aiesec-vibrant-blue);
   height: var(--nav-height);
   display: flex;
   justify-content: space-between;
@@ -93,6 +95,92 @@ a {
 
 .nav-item:hover {
   opacity: 1;
+}
+
+.nav-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 4px;
+  background: var(--aiesec-vibrant-blue);
+  color: var(--pure-white);
+  font-family: 'Lato', 'Open Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-dropdown-trigger:hover,
+.nav-dropdown:hover .nav-dropdown-trigger,
+.nav-dropdown:focus-within .nav-dropdown-trigger {
+  background: var(--aiesec-vibrant-blue-dark);
+}
+
+.dropdown-caret {
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.university-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1100;
+  min-width: 220px;
+  margin: 0;
+  padding: 0.4rem 0;
+  list-style: none;
+  background: var(--aiesec-vibrant-blue);
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.nav-dropdown:hover .university-menu,
+.nav-dropdown:focus-within .university-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.university-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  color: var(--pure-white);
+  font-family: 'Lato', 'Open Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.18s ease;
+}
+
+.university-menu a:hover,
+.university-menu a:focus-visible {
+  background: var(--aiesec-vibrant-blue-dark);
+  outline: none;
+}
+
+.menu-caret {
+  font-size: 0.65rem;
 }
 
 .scroll-story-wrapper {
