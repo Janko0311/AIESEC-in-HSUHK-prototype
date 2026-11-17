@@ -1,6 +1,6 @@
-# AIESEC in HSUHK Portal
+# AIESEC in HSUHK Website Prototype
 
-Official local committee website for **AIESEC in The Hang Seng University of Hong Kong** (Session 2025–2026).
+Official local committee website for **AIESEC in The Hang Seng University of Hong Kong** 
 
 A single-page site built around an immersive, scroll-driven "flight journey": a stylised aircraft takes off, cruises past global-exchange metrics, and lands on a runway marker — rendered live in 3D on a fixed canvas behind the page content.
 
