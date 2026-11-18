@@ -37,6 +37,8 @@ export function initFlightScene() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const sky = new Sky();
   sky.scale.setScalar(10000);
@@ -64,11 +66,20 @@ export function initFlightScene() {
   scene.fog = new THREE.FogExp2(0xe9c79a, 0.012);
   pmremGenerator.dispose();
 
-  const ambientLight = new THREE.HemisphereLight(0xffd9a0, 0x4a3b2a, 1.1);
+  const ambientLight = new THREE.HemisphereLight(0xffd9a0, 0x4a3b2a, 0.6);
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffd2a1, 2.2);
   directionalLight.position.copy(sun).multiplyScalar(30);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.set(2048, 2048);
+  directionalLight.shadow.camera.near = 1;
+  directionalLight.shadow.camera.far = 200;
+  directionalLight.shadow.camera.left = -40;
+  directionalLight.shadow.camera.right = 40;
+  directionalLight.shadow.camera.top = 40;
+  directionalLight.shadow.camera.bottom = -40;
+  directionalLight.shadow.bias = -0.0005;
   scene.add(directionalLight);
 
   let airplane = null;
@@ -77,12 +88,18 @@ export function initFlightScene() {
   const loader = new GLTFLoader();
 
   loader.load(
-    '/models/airplane.glb?v=4',
+    '/models/airplane.glb?v=10',
     (gltf) => {
       airplane = gltf.scene;
       airplane.scale.setScalar(1.15);
-      airplane.position.set(0, -0.2, 0);
+      airplane.position.set(0.25, -0.2, 0);
       airplane.rotation.set(0.05, -0.3, 0.05);
+      airplane.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
       scene.add(airplane);
 
       maybeInitAnimations();
@@ -106,6 +123,7 @@ export function initFlightScene() {
       const extras = [];
       runway.traverse((child) => {
         if (child.isLight || child.isCamera) extras.push(child);
+        if (child.isMesh) child.receiveShadow = true;
       });
       extras.forEach((child) => child.parent.remove(child));
 
@@ -182,7 +200,7 @@ export function initFlightScene() {
       .to(
         airplane.position,
         {
-          x: -2.4,
+          x: 0.25,
           y: 1.2,
           z: -3.2,
           duration: 3
@@ -214,7 +232,7 @@ export function initFlightScene() {
       .to(
         airplane.position,
         {
-          x: 0.4,
+          x: 0.25,
           y: -2.8,
           z: -4.8,
           duration: 3
