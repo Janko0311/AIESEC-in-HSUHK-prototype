@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Sky } from 'three/examples/jsm/objects/Sky.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -15,7 +16,7 @@ export function initFlightScene() {
     55,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    20000
   );
   camera.position.set(0, 0.4, 7);
 
@@ -23,7 +24,7 @@ export function initFlightScene() {
   try {
     renderer = new THREE.WebGLRenderer({
       canvas,
-      alpha: true,
+      alpha: false,
       antialias: true
     });
   } catch (error) {
@@ -34,23 +35,41 @@ export function initFlightScene() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.9;
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+  const sky = new Sky();
+  sky.scale.setScalar(10000);
+  sky.material.depthWrite = false;
+  const skyUniforms = sky.material.uniforms;
+  skyUniforms['turbidity'].value = 8;
+  skyUniforms['rayleigh'].value = 2.4;
+  skyUniforms['mieCoefficient'].value = 0.006;
+  skyUniforms['mieDirectionalG'].value = 0.82;
+
+  const sun = new THREE.Vector3();
+  const phi = THREE.MathUtils.degToRad(90 - 10);
+  const theta = THREE.MathUtils.degToRad(165);
+  sun.setFromSphericalCoords(1, phi, theta);
+  skyUniforms['sunPosition'].value.copy(sun);
+  scene.add(sky);
+
+  const pmremGenerator = new THREE.PMREMGenerator(renderer);
+  const envScene = new THREE.Scene();
+  envScene.add(sky);
+  const envMap = pmremGenerator.fromScene(envScene).texture;
+  scene.add(sky);
+  scene.environment = envMap;
+  scene.background = new THREE.Color(0xe9c79a);
+  scene.fog = new THREE.FogExp2(0xe9c79a, 0.012);
+  pmremGenerator.dispose();
+
+  const ambientLight = new THREE.HemisphereLight(0xffd9a0, 0x4a3b2a, 1.1);
   scene.add(ambientLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 1.6);
-  directionalLight.position.set(5, 5, 6);
+  const directionalLight = new THREE.DirectionalLight(0xffd2a1, 2.2);
+  directionalLight.position.copy(sun).multiplyScalar(30);
   scene.add(directionalLight);
-
-  const rimLight = new THREE.DirectionalLight(0x66ccff, 1.2);
-  rimLight.position.set(-5, 2, -4);
-  scene.add(rimLight);
-
-  const stars = createStars();
-  scene.add(stars);
-
-  const clouds = createCloudParticles();
-  scene.add(clouds);
 
   let airplane = null;
   let runway = null;
@@ -58,7 +77,7 @@ export function initFlightScene() {
   const loader = new GLTFLoader();
 
   loader.load(
-    '/models/airplane.glb',
+    '/models/airplane.glb?v=2',
     (gltf) => {
       airplane = gltf.scene;
       airplane.scale.setScalar(1.15);
@@ -77,7 +96,7 @@ export function initFlightScene() {
   );
 
   loader.load(
-    '/models/a320_takeoff_scene.glb',
+    '/models/a320_takeoff_scene.glb?v=2',
     (gltf) => {
       runway = gltf.scene;
 
@@ -180,14 +199,6 @@ export function initFlightScene() {
         },
         2
       )
-      .to(
-        clouds.rotation,
-        {
-          y: Math.PI * 0.4,
-          duration: 3
-        },
-        2
-      )
 
       // Stage 3: Landing
       .to(
@@ -265,9 +276,6 @@ export function initFlightScene() {
   function animate() {
     requestAnimationFrame(animate);
 
-    stars.rotation.y += 0.0008;
-    clouds.rotation.y += 0.0012;
-
     renderer.render(scene, camera);
   }
 
@@ -281,53 +289,6 @@ export function initFlightScene() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
-}
-
-function createStars() {
-  const geometry = new THREE.BufferGeometry();
-  const count = 700;
-  const positions = new Float32Array(count * 3);
-
-  for (let i = 0; i < count * 3; i += 3) {
-    positions[i] = (Math.random() - 0.5) * 40;
-    positions[i + 1] = (Math.random() - 0.5) * 25;
-    positions[i + 2] = -Math.random() * 30;
-  }
-
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-  const material = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: 0.04,
-    transparent: true,
-    opacity: 0.7
-  });
-
-  return new THREE.Points(geometry, material);
-}
-
-function createCloudParticles() {
-  const group = new THREE.Group();
-  const geometry = new THREE.SphereGeometry(0.18, 10, 10);
-  const material = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    transparent: true,
-    opacity: 0.18,
-    roughness: 1
-  });
-
-  for (let i = 0; i < 40; i++) {
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(
-      (Math.random() - 0.5) * 18,
-      (Math.random() - 0.1) * 8,
-      -Math.random() * 14
-    );
-    mesh.scale.setScalar(Math.random() * 4 + 1);
-    group.add(mesh);
-  }
-
-  return group;
 }
 
 function createFallbackPlane() {

@@ -7,8 +7,8 @@
   --text-dark: #222222;
   --text-muted: rgba(255, 255, 255, 0.82);
   --surface-light: #f5f9ff;
-  --overlay-dark: rgba(0, 0, 0, 0.45);
-  --overlay-deep: rgba(0, 0, 0, 0.6);
+  --overlay-dark: rgba(60, 40, 20, 0.28);
+  --overlay-deep: rgba(74, 45, 18, 0.34);
   --nav-height: 70px;
   --container: min(1180px, calc(100% - 3rem));
   --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.15);
@@ -29,7 +29,7 @@ body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
-  background: #0a1020;
+  background: #e9c79a;
   overflow-x: hidden;
 }
 
@@ -301,7 +301,7 @@ a {
 .panel-content {
   max-width: 620px;
   color: var(--pure-white);
-  background: rgba(10, 16, 32, 0.42);
+  background: rgba(38, 28, 18, 0.48);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 2rem;
