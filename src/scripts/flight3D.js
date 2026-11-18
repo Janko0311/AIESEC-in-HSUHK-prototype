@@ -77,7 +77,7 @@ export function initFlightScene() {
   const loader = new GLTFLoader();
 
   loader.load(
-    '/models/airplane.glb?v=2',
+    '/models/airplane.glb?v=4',
     (gltf) => {
       airplane = gltf.scene;
       airplane.scale.setScalar(1.15);
@@ -96,7 +96,7 @@ export function initFlightScene() {
   );
 
   loader.load(
-    '/models/a320_takeoff_scene.glb?v=2',
+    '/models/a320_takeoff_scene.glb?v=3',
     (gltf) => {
       runway = gltf.scene;
 
